@@ -10,55 +10,113 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+void	free_all(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while(tab[i] != NULL)
+	{
+		free(tab[i]);
+		i++:
+	}
+	free(tab);
+}
+
+char	*path_checker(char *all_path, char *cmd)
+{
+	char	*path;
+	int	i;
+
+	i = 0;
+	while (all_path[i] != NULL)
+	{
+		path = malloc(ft_strlen(path_to_check) + ft_strlen(cmd) + 2);
+		if (path == NULL)
+			return (NULL);
+		ft_strlcpy(path, path_to_check, ft_strlen(path));
+		ft_strlcat(path, '/', ft_strlen(path));
+		ft_strlcat(path, cmd, ft_strlen(path));
+		if ((access(path), X_OK) == 0)
+			return (path);
+		i++;
+		free(path);
+	}
+	return (NULL);
+}
+
+char	*find_path_string(char **envp)
+{
+	int	i;
+	char	*path_str;
+
+	i = 0;
+	while (envp[i] != NULL)
+	{
+		if(ft_strnstr((const char)envp[i], "PATH=", 5) != 0)
+		{
+			path_str = envp[i] + 5;
+			return (path_str);
+		}
+		i++:
+	}
+	return (NULL);
+}
+
 char	*path_finder(char *cmd, char **envp)
 {
 	int	i;
-	char	*start_ptr;
+	char	*path_str;
 	char	**all_path;
-	char	*path;
+	char	*right_path;
 
 	i = 0;
-	while(envp[i] != NULL)
-	{
-		if(ft_strnstr((const char) envp[i], (const char) "PATH=", 5) != 0)
-		{
-			start_ptr = envp[i] + 5;
-			break;
-		}
-		i++;
-	}
-	//check for finding path error
-	all_path = ft_split(start_ptr, ':');
-	i = 0;
-	while(all_path[i] != 0)
-	{
-		path = malloc(ft_strlen(all_path[i]) + ft_strlen(cmd) + 2);
-		ft_strlcpy(path, (const char *)all_path[i], ft_strlen(path));
-		ft_strcat(path, '/'); // add size
-		ft_strlcat(path, cmd);
-		if (access(path, X_OK) == 0)
-		{
-			free_all(all_path);
-			return (path);
-		}
-		free(path);
-		i++;
-	}
+	path_str = find_path_string(envp);
+	if (path_str == NULL)
+		return (NULL);
+	all_path = ft_split(path_str, ':');
+	right_path = path_checker(all_path, cmd);
+	if (right_path != NULL)
+		return (right_path);
 	free_all(all_path);
-	return (0);
+	return (NULL);
 }
 
-
+char	**create_cmd_tab(char *cmd, char **envp)
+{
+	char	**cmd_tab;
+	
+	cmd_tab = ft_split(cmd, ' ');
+	if (cmd_tab == NULL)
+	{
+		perror("cmd_tab creation failed.");
+		exit(EXIT_FAILURE);
+	}
+	return (cmd_tab);
+}
 
 void	*execution(char *cmd, char **envp)
 {
 	char	**cmd_tab;
 	char	*path;
 
-	cmd_tab = ft_split(cmd, ' ');
+	cmd_tab = create_cmd_tab(cmd, envp);
 	path = path_finder(cmd_tab[0], envp);
-	
-	
+	if (path == NULL)
+	{
+		free_all(cmd_tab);
+		perror("Path finding failed.");
+		exit(EXIT_FAILURE);
+	}
+	if (execve(path, cmd_tab, envp) == -1)
+	{
+		perror("Execution failed failed.");
+		free(path);
+		free(cmd_tab);
+		exit(EXIT_FAILURE);
+	}
+	free(path);
+	free_all(cmd_tab);
 }
 
 
@@ -83,33 +141,47 @@ void	open_and_check(int argc, char *argv[], int *fd1, int *fd2)
 	}
 }
 
-void	child_process(char *cmd1, int file_fd, int *pipe, char **envp)
+void	child_process(char *cmd1, int file_fd, int *pipe_fds, char **envp)
 {
-	//redirect input from standard to infile
 	dup2(file_fd, 0);
-	dup2(pipe[1], 1);
-	close(pipe[0]);
+	dup2(pipe_fds[1], 1);
+	close(pipe_fds[0]);
 	execution(cmd1, envp);
 }
 
-void	parent_process();
+void	parent_process(char *cmd2, int file_fd, int *pipe_fds, char **envp)
+{
+	int	child_status;
+
+	wait(&child_status);	
+	dup2(file_fd, 1);
+	dup2(pipe_fds[0], 0);
+	close(pipe_fds[1]);
+	execution(cmd2, envp);
+}
 
 int	main(int argc, char *argv[], char *envp[])
 {
 	int		fd_file1;
 	int		fd_file2;
-	int		pipe[2];
+	int		pipe_fds[2];
 	pid_t	id;
 
 	open_and_check(argc, argv, &fd_file1, &fd_file2);
-	if (pipe(pipe < 0))
+	if (pipe(pipe_fds) < 0)
 	{
 		perror("Pipe creation failed");
 		exit(EXIT_FAILURE);
 	}
 	id = fork();
+	if (id = -1)
+	{
+		perror("Fork system call failed.");
+		exit(EXIT_FAILURE);
+	}
 	if (id == 0)
-		child_process(argv[2], fd_file1, pipe, envp);
+		child_process(argv[2], fd_file1, pipe_fds, envp);
 	else
-		parent_process(argv[3], fd_file2, pipe, envp);
-}		
+		parent_process(argv[3], fd_file2, pipe_fds, envp);	
+	return (0);
+}
