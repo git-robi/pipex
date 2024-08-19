@@ -15,14 +15,15 @@
 NAME = pipex
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
-SRCS = pipex.c pipex_utils.c
+SRCS = src/pipex.c src/pipex_utils.c
 OBJS = $(SRCS:.c=.o)
-HEADER = pipex.h libft.h
+HEADER = includes/pipex.h
 
 all: $(NAME)
 
 $(NAME): $(OBJS) 
-	ar rcs $(NAME) $(OBJS)
+	$(CC) $(CFLAGS) -o $(NAME) $(OBJS) -L libft -lft
+	@chmod +x $(NAME)
 
 %.o: %.c Makefile $(HEADER)
 	$(CC) $(CFLAGS) -c $< -o $@
