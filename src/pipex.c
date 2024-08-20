@@ -21,16 +21,17 @@ void	execution(char *cmd, char **env)
 	path = path_finder(cmd_tab[0], env);
 	if (path == NULL)
 	{
+		ft_putstr_fd(cmd_tab[0], 2);
+		ft_putstr_fd(": command not found\n", 2);
 		free_all(cmd_tab);
-		perror("Error");
-		exit(0);
+		exit(127);
 	}
 	if (execve(path, cmd_tab, env) == -1)
 	{
 		free(path);
 		free(cmd_tab);
-		perror("Execution failed.");
-		exit(EXIT_FAILURE);
+		perror("Execution failed");
+		exit(126);
 	}
 	free(path);
 	free_all(cmd_tab);
@@ -40,20 +41,20 @@ void	open_and_check(int argc, char *argv[], int *fd1, int *fd2)
 {
 	if (argc != 5)
 	{
-		write(2, "Error: wrong number of arguments\n", 33);
-		exit(EXIT_FAILURE);
+		ft_putstr_fd("Error: wrong number of arguments\n", 2);
+		exit(1);
 	}
 	*fd1 = open(argv[1], O_RDONLY);
 	if (*fd1 < 0)
 	{
 		perror("Error");
-		exit(0);
+		exit(1);
 	}
 	*fd2 = open(argv[4], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (*fd2 < 0)
 	{
 		perror("Error");
-		exit(0);
+		exit(1);
 	}
 }
 
@@ -87,13 +88,13 @@ int	main(int argc, char *argv[], char **env)
 	if (pipe(pipe_fds) < 0)
 	{
 		perror("Pipe creation failed");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	id = fork();
 	if (id == -1)
 	{
 		perror("Fork system call failed.");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	if (id == 0)
 		child_process(argv[2], fd_file1, pipe_fds, env);

@@ -93,7 +93,7 @@ char	**create_cmd_tab(char *cmd)
 	if (cmd_tab == NULL)
 	{
 		perror("cmd_tab creation failed.");
-		exit(EXIT_FAILURE);
+		exit(1);
 	}
 	return (cmd_tab);
 }
