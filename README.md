@@ -49,26 +49,26 @@ I broke down this project into several key components:
 Developing pipex revealed several fundamental challenges in Unix process management and inter-process communication.
 
 ### Process Synchronization
-The cornerstone challenge was ensuring reliable process coordination. Each command in the pipe chain needed to execute in the correct sequence, with data flowing smoothly between processes. We implemented careful synchronization mechanisms to prevent deadlocks while maintaining proper process execution order. Our solution monitors process exit statuses to ensure reliable operation and proper error propagation through the pipe chain.
+The cornerstone challenge was ensuring reliable process coordination. Each command in the pipe chain needed to execute in the correct sequence, with data flowing smoothly between processes. I implemented careful synchronization mechanisms to prevent deadlocks while maintaining proper process execution order. My solution monitors process exit statuses to ensure reliable operation and proper error propagation through the pipe chain.
 
 ### Resource Management
-Managing resources across multiple processes demanded meticulous attention to detail. Each process required careful tracking of its memory allocations and file descriptors. We developed a comprehensive cleanup system that prevents memory leaks by properly deallocating resources, even in error conditions. Special attention was paid to file descriptor management, ensuring proper closure in both parent and child processes.
+Managing resources across multiple processes demanded meticulous attention to detail. Each process required careful tracking of its memory allocations and file descriptors. I developed a comprehensive cleanup system that prevents memory leaks by properly deallocating resources, even in error conditions. Special attention was paid to file descriptor management, ensuring proper closure in both parent and child processes.
 
 ### Error Handling and Recovery
-Robust error management proved crucial for system reliability. Our implementation handles various failure scenarios gracefully, from missing commands to permission issues. The error handling system provides clear, actionable feedback while ensuring proper cleanup of system resources. This comprehensive approach maintains system stability even when encountering unexpected conditions.
+Robust error management proved crucial for system reliability. My implementation handles various failure scenarios gracefully, from missing commands to permission issues. The error handling system provides clear, actionable feedback while ensuring proper cleanup of system resources. This comprehensive approach maintains system stability even when encountering unexpected conditions.
 
 ## 🎓 What I learned 
 
 This project provided deep insights into Unix system internals and process management.
 
 ### Unix System Architecture
-Implementing pipex deepened our understanding of Unix's process model. We gained practical experience with process creation, management, and inter-process communication through pipes. This hands-on work revealed the elegant simplicity of Unix's file descriptor system and how it enables powerful data flow between processes.
+Implementing pipex deepened my understanding of Unix's process model. I gained practical experience with process creation, management, and inter-process communication through pipes. This hands-on work revealed the elegant simplicity of Unix's file descriptor system and how it enables powerful data flow between processes.
 
 ### System Programming Fundamentals
-The project required mastery of essential system calls and process management techniques. Working directly with fork(), pipe(), and execve() provided practical experience in low-level system programming. We learned to manage complex process hierarchies while maintaining data integrity throughout the execution chain.
+The project required mastery of essential system calls and process management techniques. Working directly with fork(), pipe(), and execve() provided practical experience in low-level system programming. I learned to manage complex process hierarchies while maintaining data integrity throughout the execution chain.
 
 ### Robust Error Management
-Developing comprehensive error handling proved essential for reliable operation. We implemented systematic error checking at each critical point, from command validation to resource allocation. The resulting system gracefully handles edge cases while providing meaningful feedback, ensuring a stable and user-friendly experience.
+Developing comprehensive error handling proved essential for reliable operation. I implemented systematic error checking at each critical point, from command validation to resource allocation. The resulting system gracefully handles edge cases while providing meaningful feedback, ensuring a stable and user-friendly experience.
 
 ### 📝 Speaking of Error Management...
 
