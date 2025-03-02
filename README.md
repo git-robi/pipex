@@ -46,44 +46,31 @@ I broke down this project into several key components:
 
 ## 🤔 The Tricky Parts
 
-This project had some interesting challenges:
+Developing pipex revealed several fundamental challenges in Unix process management and inter-process communication.
 
-1. **Process Synchronization**:
-   - Making sure processes run in the right order
-   - Handling pipe communication without deadlocks
-   - Managing process exit statuses
+### Process Synchronization
+The cornerstone challenge was ensuring reliable process coordination. Each command in the pipe chain needed to execute in the correct sequence, with data flowing smoothly between processes. We implemented careful synchronization mechanisms to prevent deadlocks while maintaining proper process execution order. Our solution monitors process exit statuses to ensure reliable operation and proper error propagation through the pipe chain.
 
-2. **Memory Management**:
-   - Avoiding memory leaks with multiple processes
-   - Properly freeing allocated resources
-   - Handling file descriptor cleanup
+### Resource Management
+Managing resources across multiple processes demanded meticulous attention to detail. Each process required careful tracking of its memory allocations and file descriptors. We developed a comprehensive cleanup system that prevents memory leaks by properly deallocating resources, even in error conditions. Special attention was paid to file descriptor management, ensuring proper closure in both parent and child processes.
 
-3. **Error Handling**:
-   - Dealing with command not found errors
-   - Managing file access permissions
-   - Handling pipe creation failures
-   - Graceful error reporting
+### Error Handling and Recovery
+Robust error management proved crucial for system reliability. Our implementation handles various failure scenarios gracefully, from missing commands to permission issues. The error handling system provides clear, actionable feedback while ensuring proper cleanup of system resources. This comprehensive approach maintains system stability even when encountering unexpected conditions.
 
-## 🎓 What I Learned
+## 🎓 What I learned 
 
-This project was a goldmine of learning opportunities:
+This project provided deep insights into Unix system internals and process management.
 
-1. **Deep Unix Knowledge**:
-   - Understanding process creation and management
-   - Learning about file descriptors and redirection
-   - Grasping how pipes work at a low level
+### Unix System Architecture
+Implementing pipex deepened our understanding of Unix's process model. We gained practical experience with process creation, management, and inter-process communication through pipes. This hands-on work revealed the elegant simplicity of Unix's file descriptor system and how it enables powerful data flow between processes.
 
-2. **System Programming**:
-   - Working with system calls
-   - Managing multiple processes
-   - Handling inter-process communication
+### System Programming Fundamentals
+The project required mastery of essential system calls and process management techniques. Working directly with fork(), pipe(), and execve() provided practical experience in low-level system programming. We learned to manage complex process hierarchies while maintaining data integrity throughout the execution chain.
 
-3. **Better Error Handling**:
-   - Implementing robust error checking
-   - Creating informative error messages
-   - Graceful program termination
+### Robust Error Management
+Developing comprehensive error handling proved essential for reliable operation. We implemented systematic error checking at each critical point, from command validation to resource allocation. The resulting system gracefully handles edge cases while providing meaningful feedback, ensuring a stable and user-friendly experience.
 
-### 📝 Speaking of Error Handling...
+### 📝 Speaking of Error Management...
 
 My implementation includes robust error handling for:
 - Invalid number of arguments
