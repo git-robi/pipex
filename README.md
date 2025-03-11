@@ -1,6 +1,6 @@
 # 🔧 pipex - Understanding Unix Pipes in C
 
-Hey there! 👋 Welcome to my pipex project, where I recreated one of Unix's most powerful features - command piping! Let me walk you through this fascinating journey into the world of process handling and Unix pipes.
+Hey there! 👋 Welcome to my pipex project, where I recreated one of Unix's most powerful features - command piping!
 
 ## 🎯 What's This Project About?
 
